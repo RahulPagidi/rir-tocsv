@@ -7,6 +7,7 @@ import csv
 from collections import defaultdict
 import io
 import json
+import magic
 import os
 import requests
 import sys
@@ -70,19 +71,19 @@ if __name__ == "__main__":
         fname = os.path.basename(path)
 
         with open(path, 'rb') as fp:
-            did = api.post_document(fp)['id']
+            finfo = (fname, fp, magic.detect_from_filename(path).mime_type)
+            did = api.post_document(finfo)['id']
         r = api.poll_document(did)
-        print(r)
 
         fstr = defaultdict(list)
-        for f in doc['r'].get('fields', []):
+        for f in r.get('fields', []):
             if isinstance(f['content'], str):
-                fstr[f['title']] = f['content']
+                fstr[f['title']].append(f['content'])
             else:
-                fstr[f['title']] = '\n'.join('%s: %s' % (sf['title'], sf['content']) for sf in f['content'])
+                fstr[f['title']].append('\n'.join('%s: %s' % (sf['title'], sf['content']) for sf in f['content']))
         print(fstr)
 
-        row = dict(filename=doc['filename'], status=doc['r']['status'], preview=doc['r'].get('preview', ''))
+        row = dict(filename=fname, status=r['status'], preview=r.get('preview', ''))
         for k, vl in fstr.items():
             row[k] = '\n'.join(vl)
         writer.writerow(row)
