@@ -71,7 +71,7 @@ if __name__ == "__main__":
         fname = os.path.basename(path)
 
         with open(path, 'rb') as fp:
-            finfo = (fname, fp, magic.detect_from_filename(path).mime_type)
+            finfo = (fname, fp, magic.from_file(path))
             did = api.post_document(finfo)['id']
         r = api.poll_document(did)
 
