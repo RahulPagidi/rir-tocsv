@@ -7,11 +7,12 @@ import csv
 from collections import defaultdict
 import io
 import json
-import magic
 import os
-import requests
 import sys
 import time
+
+import magic
+import requests
 
 
 class RIRAPI(object):
