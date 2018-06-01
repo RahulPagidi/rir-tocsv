@@ -1,8 +1,6 @@
 #!/usr/bin/env python3
 #
 
-from __future__ import print_function, division
-
 import csv
 from collections import defaultdict
 import io
@@ -78,7 +76,7 @@ if __name__ == "__main__":
 
         fstr = defaultdict(list)
         for f in r.get('fields', []):
-            if isinstance(f['content'], unicode) or isinstance(f['content'], str):
+            if isinstance(f['content'], str):
                 fstr[f['title']].append(f['content'])
             else:
                 fstr[f['title']].append('\n'.join('%s: %s' % (sf['title'], sf['content']) for sf in f['content']))
